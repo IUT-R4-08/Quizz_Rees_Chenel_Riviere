@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\Queue as QueueContract;
 use Illuminate\Database\Connection;
 use Illuminate\Queue\Jobs\DatabaseJob;
 use Illuminate\Queue\Jobs\DatabaseJobRecord;
+use Illuminate\Queue\Jobs\InspectedJob;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -129,6 +130,94 @@ class DatabaseQueue extends Queue implements QueueContract, ClearableQueue
             ->where('queue', $this->getQueue($queue))
             ->whereNotNull('reserved_at')
             ->count();
+    }
+
+    /**
+     * Get the pending jobs for the given queue.
+     *
+     * @param  string|null  $queue
+     * @return \Illuminate\Support\Collection<int, \Illuminate\Queue\Jobs\InspectedJob>
+     */
+    public function pendingJobs($queue = null): Collection
+    {
+        return $this->database->table($this->table)
+            ->where('queue', $this->getQueue($queue))
+            ->whereNull('reserved_at')
+            ->where('available_at', '<=', $this->currentTime())
+            ->get()
+            ->map(fn ($record) => InspectedJob::fromPayload($record->payload, $record->attempts));
+    }
+
+    /**
+     * Get the delayed jobs for the given queue.
+     *
+     * @param  string|null  $queue
+     * @return \Illuminate\Support\Collection<int, \Illuminate\Queue\Jobs\InspectedJob>
+     */
+    public function delayedJobs($queue = null): Collection
+    {
+        return $this->database->table($this->table)
+            ->where('queue', $this->getQueue($queue))
+            ->whereNull('reserved_at')
+            ->where('available_at', '>', $this->currentTime())
+            ->get()
+            ->map(fn ($record) => InspectedJob::fromPayload($record->payload, $record->attempts));
+    }
+
+    /**
+     * Get the reserved jobs for the given queue.
+     *
+     * @param  string|null  $queue
+     * @return \Illuminate\Support\Collection<int, \Illuminate\Queue\Jobs\InspectedJob>
+     */
+    public function reservedJobs($queue = null): Collection
+    {
+        return $this->database->table($this->table)
+            ->where('queue', $this->getQueue($queue))
+            ->whereNotNull('reserved_at')
+            ->get()
+            ->map(fn ($record) => InspectedJob::fromPayload($record->payload, $record->attempts));
+    }
+
+    /**
+     * Get all pending jobs across every queue.
+     *
+     * @return \Illuminate\Support\Collection<int, \Illuminate\Queue\Jobs\InspectedJob>
+     */
+    public function allPendingJobs(): Collection
+    {
+        return $this->database->table($this->table)
+            ->whereNull('reserved_at')
+            ->where('available_at', '<=', $this->currentTime())
+            ->get()
+            ->map(fn ($record) => InspectedJob::fromPayload($record->payload, $record->attempts));
+    }
+
+    /**
+     * Get all delayed jobs across every queue.
+     *
+     * @return \Illuminate\Support\Collection<int, \Illuminate\Queue\Jobs\InspectedJob>
+     */
+    public function allDelayedJobs(): Collection
+    {
+        return $this->database->table($this->table)
+            ->whereNull('reserved_at')
+            ->where('available_at', '>', $this->currentTime())
+            ->get()
+            ->map(fn ($record) => InspectedJob::fromPayload($record->payload, $record->attempts));
+    }
+
+    /**
+     * Get all reserved jobs across every queue.
+     *
+     * @return \Illuminate\Support\Collection<int, \Illuminate\Queue\Jobs\InspectedJob>
+     */
+    public function allReservedJobs(): Collection
+    {
+        return $this->database->table($this->table)
+            ->whereNotNull('reserved_at')
+            ->get()
+            ->map(fn ($record) => InspectedJob::fromPayload($record->payload, $record->attempts));
     }
 
     /**

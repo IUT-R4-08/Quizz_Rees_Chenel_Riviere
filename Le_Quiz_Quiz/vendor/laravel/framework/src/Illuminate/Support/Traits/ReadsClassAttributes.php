@@ -11,32 +11,26 @@ trait ReadsClassAttributes
      * Get a configuration value from an attribute, falling back to a property.
      *
      * @param  object  $target
-     * @param  string  $attributeClass
+     * @param  class-string  $attributeClass
      * @param  string|null  $property
      * @param  mixed  $default
      * @return mixed
      */
     protected function getAttributeValue($target, string $attributeClass, ?string $property = null, $default = null)
     {
-        try {
-            $reflection = new ReflectionClass($target);
+        $reflection = new ReflectionClass($target);
 
-            do {
-                $attributes = $reflection->getAttributes($attributeClass);
+        $defaultProperties = $reflection->getDefaultProperties();
 
-                if (count($attributes) > 0) {
-                    return $this->extractAttributeValue($attributes[0]->newInstance());
-                }
-            } while ($reflection = $reflection->getParentClass());
-        } catch (Exception) {
-            //
+        if (isset($target->{$property}) && $target->{$property} !== ($defaultProperties[$property] ?? null)) {
+            return $target->{$property};
         }
 
-        if ($property !== null) {
-            return $target->{$property} ?? $default;
+        if ($instance = $this->getAttributeInstance($target, $attributeClass)) {
+            return $this->extractAttributeValue($instance);
         }
 
-        return $default;
+        return $target->{$property} ?? $default;
     }
 
     /**
@@ -49,6 +43,32 @@ trait ReadsClassAttributes
     {
         $properties = get_object_vars($instance);
 
-        return count($properties) === 0 ? true : reset($properties);
+        return $properties === [] ? true : reset($properties);
+    }
+
+    /**
+     * Get an instance of the given attribute class from the target class or its parents.
+     *
+     * @param  object  $target
+     * @param  class-string  $attributeClass
+     * @return object|null
+     */
+    protected function getAttributeInstance($target, string $attributeClass)
+    {
+        $reflection = new ReflectionClass($target);
+
+        try {
+            do {
+                $attributes = $reflection->getAttributes($attributeClass);
+
+                if (count($attributes) > 0) {
+                    return $attributes[0]->newInstance();
+                }
+            } while ($reflection = $reflection->getParentClass());
+        } catch (Exception) {
+            //
+        }
+
+        return null;
     }
 }

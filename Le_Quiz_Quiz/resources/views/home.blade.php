@@ -17,7 +17,7 @@
                         <p class="card-text text-muted">{{ $theme['description'] }}</p>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="/quiz/{{ $theme['slug'] }}" class="btn btn-primary">
+                        <a href="{{ route('quiz.show', $theme) }}" class="btn btn-primary">
                             Jouer
                         </a>
                     </div>

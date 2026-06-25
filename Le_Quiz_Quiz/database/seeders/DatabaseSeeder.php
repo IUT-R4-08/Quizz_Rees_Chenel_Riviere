@@ -20,14 +20,17 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Optionnel : utilisateur de test
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'user@test.com'],
+            [
+                'name' => 'user',
+                'password' => Hash::make('user'),
+            ]
+        );
 
         $this->call([
             ThemeQuizSeeder::class,
+            QuizResultSeeder::class,
         ]);
     }
 }

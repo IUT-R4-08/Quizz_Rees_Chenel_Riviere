@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ThemeController;
+use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
@@ -19,6 +20,32 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('themes', ThemeController::class);
+});
+
+Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
+    Route::get('/themes/{theme}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
+    Route::post('/themes/{theme}/questions', [QuestionController::class, 'store'])->name('questions.store');
+});
+
+Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
+
+    Route::get('/themes/{theme}/questions', [QuestionController::class, 'index'])
+        ->name('questions.index');
+
+    Route::get('/themes/{theme}/questions/create', [QuestionController::class, 'create'])
+        ->name('questions.create');
+
+    Route::post('/themes/{theme}/questions', [QuestionController::class, 'store'])
+        ->name('questions.store');
+
+    Route::get('/themes/{theme}/questions/{question}/edit', [QuestionController::class, 'edit'])
+        ->name('questions.edit');
+
+    Route::put('/themes/{theme}/questions/{question}', [QuestionController::class, 'update'])
+        ->name('questions.update');
+
+    Route::delete('/themes/{theme}/questions/{question}', [QuestionController::class, 'destroy'])
+        ->name('questions.destroy');
 });
 
 require __DIR__.'/auth.php';

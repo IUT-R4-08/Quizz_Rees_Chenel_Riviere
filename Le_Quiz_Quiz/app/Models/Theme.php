@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Question;
 
 class Theme extends Model
 {
@@ -12,4 +13,9 @@ class Theme extends Model
         'icone',
         'description',
     ];
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
 }

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends Factory<Question>
  */
+use App\Models\Theme;
+
 class QuestionFactory extends Factory
 {
     /**
@@ -18,7 +20,8 @@ class QuestionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'theme_id' => Theme::factory(), 
+            'question' => $this->faker->sentence() . ' ?',
         ];
     }
 }

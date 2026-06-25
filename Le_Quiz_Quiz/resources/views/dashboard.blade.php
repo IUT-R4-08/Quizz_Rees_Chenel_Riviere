@@ -25,7 +25,11 @@
                                     Score : <strong>{{ $result->score }} / {{ $result->total_questions }}</strong>
                                 </p>
                                 <p class="mb-1">
-                                    {{ round(($result->score / $result->total_questions) * 100) }}%
+                                    @if($result->total_questions > 0)
+                                        {{ ($result->score / $result->total_questions) * 100 }}%
+                                    @else
+                                        0%
+                                    @endif
                                 </p>
                                 <small class="text-muted">
                                     {{ $result->created_at->format('d/m/Y H:i') }}

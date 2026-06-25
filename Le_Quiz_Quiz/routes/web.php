@@ -6,10 +6,10 @@ use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect('/');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -20,23 +20,15 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('themes', ThemeController::class);
-});
-
-Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
-    Route::get('/themes/{theme}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
-    Route::post('/themes/{theme}/questions', [QuestionController::class, 'store'])->name('questions.store');
-});
-
-Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
-
-    Route::get('/themes/{theme}/questions', [QuestionController::class, 'index'])
-        ->name('questions.index');
 
     Route::get('/themes/{theme}/questions/create', [QuestionController::class, 'create'])
         ->name('questions.create');
 
     Route::post('/themes/{theme}/questions', [QuestionController::class, 'store'])
         ->name('questions.store');
+
+    Route::get('/themes/{theme}/questions', [QuestionController::class, 'index'])
+        ->name('questions.index');
 
     Route::get('/themes/{theme}/questions/{question}/edit', [QuestionController::class, 'edit'])
         ->name('questions.edit');
@@ -48,4 +40,4 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
         ->name('questions.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

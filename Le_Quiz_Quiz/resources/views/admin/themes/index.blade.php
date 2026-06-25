@@ -3,7 +3,14 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a href="{{ route('home') }}" class="btn btn-secondary">
+                    ← Retour à l'accueil
+                </a>
+            </div>
+
             <h1>Gestion des thèmes</h1>
+
             <a href="{{ route('admin.themes.create') }}" class="btn btn-success">+ Ajouter</a>
         </div>
 

@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/quiz/{theme:slug}', [QuizController::class, 'submit'])
         ->name('quiz.submit');
-    
+
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 });

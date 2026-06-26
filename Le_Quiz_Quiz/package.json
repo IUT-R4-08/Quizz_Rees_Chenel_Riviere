@@ -12,7 +12,7 @@
         "@tailwindcss/vite": "^4.0.0",
         "alpinejs": "^3.4.2",
         "autoprefixer": "^10.4.2",
-        "axios": ">=1.11.0 <=1.14.0",
+        "axios": "^1.18.1",
         "concurrently": "^9.0.1",
         "eslint": "^10.4.0",
         "eslint-plugin-vue": "^10.9.1",

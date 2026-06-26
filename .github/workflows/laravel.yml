@@ -12,6 +12,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: Le_Quiz_Quiz
+
     steps:
 
       - name: Checkout repository

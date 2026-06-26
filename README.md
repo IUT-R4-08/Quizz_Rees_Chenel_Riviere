@@ -1,5 +1,7 @@
 # Quizz Quizz
 
+[![Laravel Tests](https://github.com/IUT-R4-08/Quizz_Rees_Chenel_Riviere/actions/workflows/laravel.yml/badge.svg)](https://github.com/IUT-R4-08/Quizz_Rees_Chenel_Riviere/actions/workflows/laravel.yml)
+
 ## Description
 
 **Quizz Quizz** est une application web développée avec **Laravel** permettant aux utilisateurs de tester leurs connaissances à travers différents thèmes de quizz.

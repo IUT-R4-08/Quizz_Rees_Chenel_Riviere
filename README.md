@@ -1,6 +1,7 @@
 # Quizz Quizz
 
 [![Laravel Tests](https://github.com/IUT-R4-08/Quizz_Rees_Chenel_Riviere/actions/workflows/laravel.yml/badge.svg)](https://github.com/IUT-R4-08/Quizz_Rees_Chenel_Riviere/actions/workflows/laravel.yml)
+![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)
 
 ## Description
 
